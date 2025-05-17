@@ -1,7 +1,7 @@
 #include <iostream>
 #include <random>
-#include <time.h>
 #include <stdlib.h>
+#include "role.h"
 
 using namespace std;
 
@@ -10,35 +10,6 @@ using namespace std;
 //seer, doctor, loud_mouth, villager
 //werewolf, junior werewolf
 //clown
-
-class Player{
-protected:
-    string name;
-    string role;
-    bool isAlive;    //masih hidup atau ga
-    bool isProtected;   //dilindungi atau ga
-public:
-    Player(){};
-    Player(string name, string role){
-        this->name = name;
-        this->role = role;
-        this->isAlive = true;
-        this->isProtected = false;
-        srand(time(NULL));
-    }
-    void virtual reset(){
-        isProtected = false;
-    }
-    string getName(){return name;}
-    string getRole(){return role;}
-    bool getIsAlive(){return isAlive;}
-    bool getIsProtected(){return isProtected;}
-};
-
-class Villager : public Player{
-public:
-    Villager(string name) : Player(name, "Villager"){}
-};
 
 int main(){
     system("cls");
@@ -58,12 +29,9 @@ int main(){
         cout << i+1 << ". " << roles[i] << endl;
     }
 
-    Player players[nPlayer];
+    Player* players[nPlayer];   //nyimpan objek players
     //randomize role
-    for (int i = 0; i < nPlayer; i++){
-        //players[i].role = roles[rand() % nPlayer]; 
-    }
-
+    
 
 
     return 0 ;
