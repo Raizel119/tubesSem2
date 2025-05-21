@@ -19,3 +19,21 @@ void Player::reset(){
 
 //class Villager
 Villager::Villager(string name) : Player(name, "Villager"){}
+
+//class Seer
+Seer::Seer(string name) : Player(name, "Seer"){}
+
+//class Doctor
+Doctor::Doctor(string name) : Player(name, "Doctor"){}
+
+//class Loudmouth
+Loudmouth::Loudmouth(string name) : Player(name, "Loudmouth"){}
+
+//class Werewolf
+Werewolf::Werewolf(string name) : Player(name, "Werewolf"){}
+
+//class JuniorWerewolf
+JuniorWerewolf::JuniorWerewolf(string name) : Player(name, "Junior Werewolf"){}
+
+//class Clown
+Clown::Clown(string name) : Player(name, "Clown"){}

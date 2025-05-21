@@ -24,4 +24,34 @@ public:
     Villager(string name);
 };
 
+class Seer : public Player{
+public:
+    Seer(string name);
+};
+
+class Doctor : public Player{
+public:
+    Doctor(string name);
+};
+
+class Loudmouth : public Player{
+public:
+    Loudmouth(string name);
+};
+
+class Werewolf : public Player{
+public:
+    Werewolf(string name);
+};
+
+class Clown : public Player{
+public:
+    Clown(string name);
+};
+
+class JuniorWerewolf : public Player{
+public:
+    JuniorWerewolf(string name);
+};
+
 #endif
