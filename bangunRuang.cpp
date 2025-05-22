@@ -21,6 +21,7 @@ public:
     void tampilVolume(){
         cout << "Bangun ruang " << getNama() << " memiliki volume: " << getVolume() << endl;
     }
+    virtual ~BangunRuang(){};
 };
 class Kubus : public BangunRuang{
 private:
@@ -32,6 +33,7 @@ public:
     void hitungVolume() override{       //abstraksi
         volume = sisi * sisi * sisi;
     }
+    ~Kubus(){}
 };
 class Balok : public BangunRuang{
 private:
@@ -45,6 +47,7 @@ public:
     void hitungVolume() override{
         volume = panjang * lebar * tinggi;
     }
+    ~Balok(){}
 };
 class Tabung : public BangunRuang{
 private:
@@ -57,6 +60,7 @@ public:
     void hitungVolume() override{
         volume = 3.14 * jari_jari * jari_jari * tinggi;
     }
+    ~Tabung(){}
 };
 class Bola : public BangunRuang{
 private:
@@ -81,6 +85,7 @@ public:
     void hitungVolume() override{
         volume = panjang * lebar * tinggi / 2;
     }
+    ~PrismaSegitiga(){}
 };
 
 int main(){
@@ -122,7 +127,6 @@ int main(){
                 bangun = new Kubus(sisi);
                 bangun->hitungVolume();
                 bangun->tampilVolume();
-                delete bangun;
                 break;
             case 2:
                 cout << "Masukkan panjang: "; cin >> panjang;
@@ -131,7 +135,6 @@ int main(){
                 bangun = new Balok(panjang, lebar, tinggi);
                 bangun->hitungVolume();
                 bangun->tampilVolume();
-                delete bangun;
                 break;
             case 3:
                 cout << "Masukkan jari-jari: "; cin >> jari_jari;
@@ -139,14 +142,12 @@ int main(){
                 bangun = new Tabung(jari_jari, tinggi);
                 bangun->hitungVolume();
                 bangun->tampilVolume();
-                delete bangun;
                 break;
             case 4:
                 cout << "Masukkan jari-jari: "; cin >> jari_jari;
                 bangun = new Bola(jari_jari);
                 bangun->hitungVolume();
                 bangun->tampilVolume();
-                delete bangun;
                 break;
             case 5:
                 double panjang, lebar, tinggi;
@@ -156,14 +157,16 @@ int main(){
                 bangun = new PrismaSegitiga(panjang, lebar, tinggi);
                 bangun->hitungVolume();
                 bangun->tampilVolume();
-                delete bangun;
                 break;
             default:
                 break;
         }
 
         cout << "Apakah anda ingin menghitung luas bangun ruang lainnya? (y/n): "; cin >> confirm;
-        if(confirm == "n" || confirm == "N") break;
+        if(confirm == "n" || confirm == "N") {
+            delete bangun;
+            break;
+        }
         else if(confirm == "y" || confirm == "Y"){
             continue;
         }
