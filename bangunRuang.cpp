@@ -71,46 +71,109 @@ public:
 };
 class PrismaSegitiga : public BangunRuang{
 private:
-    double aSegitiga, tSegitiga, tinggiPrisma;
+    double panjang, lebar, tinggi;
 public:
-    PrismaSegitiga(double aSegitiga, double tSegitiga, double tinggiPrisma) : BangunRuang("Prisma Segitiga"){
-        this->aSegitiga = aSegitiga;    //alas segitiga
-        this->tSegitiga = tSegitiga;    //tinggi segitiga
-        this->tinggiPrisma = tinggiPrisma;
+    PrismaSegitiga(double panjang, double lebar, double tinggi) : BangunRuang("Prisma Segitiga"){
+        this->panjang = panjang;    //tinggi prisma
+        this->lebar = lebar;    //alas segitiga
+        this->tinggi = tinggi;      //tinggi segitiga
     }
     void hitungVolume() override{
-        volume = aSegitiga * tSegitiga * tinggiPrisma / 2;
+        volume = panjang * lebar * tinggi / 2;
     }
 };
 
 int main(){
     string bangunRuang[] = {"Kubus", "Balok", "Tabung", "Bola", "Prisma Segitiga"};
-    int n = sizeof(bangunRuang) / sizeof(bangunRuang[0]);   //menghitung jumlah bangun ruang
+    int n = sizeof(bangunRuang) / sizeof(bangunRuang[0]);   //hitung jumlah bangun ruang
     int pilihan;    //input pilihan user
+    string confirm; //input konfirmasi user
+    BangunRuang *bangun;
+    double sisi, panjang, lebar, tinggi, jari_jari;
     string enter;
-
-    while (true){
-        system("cls");
-        //tampilkan pilihan bangun ruang yang tersedia
-        cout << "Menghitung volume bangun ruang" << endl;
-        for (int i = 0; i < n; i++){
-            cout << i + 1 << ". " << bangunRuang[i] << endl;
+    while(true){
+        // loop untuk meminta input pilihan user
+        while (true){
+            system("cls");
+            //tampilkan pilihan bangun ruang yang tersedia
+            cout << "Menghitung volume bangun ruang" << endl;
+            for (int i = 0; i < n; i++){
+                cout << i + 1 << ". " << bangunRuang[i] << endl;
+            }
+            cout << "Pilihan: "; cin >> pilihan;
+            if(cin.fail()){
+                cin.clear();
+                cout << ">> Pilihan harus angka";
+                cin.ignore(10000, '\n');    //clear buffer
+                getline(cin, enter);
+                continue;
+            }
+            if(pilihan > 0 && pilihan <= n) break;
+            else {
+                cout << ">> Pilihan harus dari 1-"<< n <<endl;
+                cin.ignore(10000, '\n');
+                getline(cin, enter);
+            }
         }
-        cout << "Pilihan: "; cin >> pilihan;
-        if(cin.fail()){
-            cin.clear();
-            cout << ">> Pilihan harus angka";
-            cin.ignore(10000, '\n');    //clear buffer
-            getline(cin, enter);
+
+        switch(pilihan){
+            case 1:
+                cout << "Masukkan sisi: "; cin >> sisi;
+                bangun = new Kubus(sisi);
+                bangun->hitungVolume();
+                bangun->tampilVolume();
+                delete bangun;
+                break;
+            case 2:
+                cout << "Masukkan panjang: "; cin >> panjang;
+                cout << "Masukkan lebar: "; cin >> lebar;
+                cout << "Masukkan tinggi: "; cin >> tinggi;
+                bangun = new Balok(panjang, lebar, tinggi);
+                bangun->hitungVolume();
+                bangun->tampilVolume();
+                delete bangun;
+                break;
+            case 3:
+                cout << "Masukkan jari-jari: "; cin >> jari_jari;
+                cout << "Masukkan tinggi: "; cin >> tinggi;
+                bangun = new Tabung(jari_jari, tinggi);
+                bangun->hitungVolume();
+                bangun->tampilVolume();
+                delete bangun;
+                break;
+            case 4:
+                cout << "Masukkan jari-jari: "; cin >> jari_jari;
+                bangun = new Bola(jari_jari);
+                bangun->hitungVolume();
+                bangun->tampilVolume();
+                delete bangun;
+                break;
+            case 5:
+                double panjang, lebar, tinggi;
+                cout << "Masukkan alas segitiga: "; cin >> lebar;
+                cout << "Masukkan tinggi segitiga: "; cin >> tinggi;
+                cout << "Masukkan tinggi prisma: "; cin >> panjang;
+                bangun = new PrismaSegitiga(panjang, lebar, tinggi);
+                bangun->hitungVolume();
+                bangun->tampilVolume();
+                delete bangun;
+                break;
+            default:
+                break;
+        }
+
+        cout << "Apakah anda ingin menghitung luas bangun ruang lainnya? (y/n): "; cin >> confirm;
+        if(confirm == "n" || confirm == "N") break;
+        else if(confirm == "y" || confirm == "Y"){
             continue;
         }
-        if(pilihan > 0 && pilihan < n) break;
-        else {
-            cout << ">> Pilihan harus dari 1-"<< n <<endl;
+        else{
+            cout << ">> Input tidak valid" << endl;
             cin.ignore(10000, '\n');
             getline(cin, enter);
         }
     }
+    cout << ">> Terima kasih telah menggunakan program ini" << endl;
     
     return 0 ;
 }
