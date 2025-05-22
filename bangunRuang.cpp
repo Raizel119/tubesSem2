@@ -72,6 +72,7 @@ public:
     void hitungVolume() override{
         volume = 4/3 * 3.14 * jari_jari * jari_jari * jari_jari;
     }
+    ~Bola(){}
 };
 class PrismaSegitiga : public BangunRuang{
 private:
