@@ -219,7 +219,7 @@ int main(){
                 bangun->tampilLuasPermukaan();
             }
 
-        cout << "Apakah anda ingin menghitung luas bangun ruang lainnya? (y/n): "; cin >> confirm;
+        cout << "Apakah anda ingin menghitung bangun ruang lainnya? (y/n): "; cin >> confirm;
         if(confirm == "n" || confirm == "N") {
             delete bangun;
             break;
