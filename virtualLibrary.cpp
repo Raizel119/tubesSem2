@@ -4,11 +4,16 @@
 #include <stack>
 #include <queue>
 #include <string>
+#include <algorithm> //for erase
 using namespace std;
 
 struct Book{
     string title;
     int qty;
+    //untuk proses penghapusan buku dari vector menggunakan erase()
+    bool operator==(const Book& other) const {
+        return title == other.title;
+    }
 };
 
 string enter;
@@ -21,7 +26,6 @@ void displayMessage(string msg){
 class Library{
 private:
     vector<Book> books;
-    queue<string> toBorrow;     //antrean meminjam jika buku kosong
     vector<Book> borrowed;     //buku yang sedang dipinjam
     stack<string> returned;     //riwayat pengembalian buku
 public:
@@ -29,7 +33,10 @@ public:
         Book newBook;
         cout << "Masukkan judul buku: "; cin >> newBook.title;
         cout << "Masukkan stock buku: "; cin >> newBook.qty;
-        if(newBook.qty < 1) newBook.qty = 1;    //jika stock < 1, set stock = 1
+        if(newBook.qty < 1) {
+            displayMessage("Stock buku yang mau ditambahkan tidak boleh kurang dari 1");
+            return;
+        }
         if(books.empty()){
             books.push_back(newBook);
         } else {
@@ -100,6 +107,11 @@ public:
         } cin.ignore(10000, '\n'); getline(cin, enter);
     }
     void searchBook(){
+        sortByName();
+        //tampilkan daftar buku yang tersedia berdasarkan nama
+        for(int i = 0; i < books.size(); i++){
+            cout << i+1 << ". Judul: " << books[i].title << ", Stock: "<< books[i].qty << endl;
+        }
         string searchTitle;
         cout << "Masukkan judul buku yang ingin dicari: "; cin >> searchTitle;
         if(books.empty()){
@@ -127,28 +139,22 @@ public:
         for(int i = 0; i < books.size(); i++){
             cout << i+1 << ". Judul: " << books[i].title << ", Stock: "<< books[i].qty << endl;
         }
+        cout << "Masukkan judul buku yang ingin dipinjam: "; cin >> title;
         for(int i = 0; i < books.size(); i++){
             if(books[i].title == title){
                 // jika stock ada, buku dpinjam
-                // jika tidak ada, tambahkan ke antrean untuk diproses
+                // jika tidak ada, stock habis
                 if(books[i].qty > 0){
                     displayMessage("Berhasil meminjam buku " + books[i].title);
                     books[i].qty--;
                     borrowed.push_back({books[i].title, 1});
                 } else {
-// hanya bs minjam 1, atau bisa bbrp sekaligus
-                    // tambahkan ke daftar antrean
-                    displayMessage("Stock buku habis, berhasil ditambahkan ke daftar antrean");
-                    toBorrow.push(title);
+                    displayMessage("Stock buku habis, silahkan pinjam buku lain");
                 }
                 return;
             }
         }
         displayMessage("Buku tidak ditemukan");
-    }
-    //memproses antrean saat buku dikembalikan
-    void processBorrowed(){
-        
     }
     void displayBorrowed(){
         if(borrowed.empty()){
@@ -157,28 +163,28 @@ public:
         }
         cout << "Buku yang sedang dipinjam: " << endl;
         for (int i = 0; i < borrowed.size(); i++){
+            if(borrowed[i].qty == 0) continue;
             cout << i+1 << ". " << borrowed[i].title << ", Jumlah: " << borrowed[i].qty << endl;
         } 
         cin.ignore(10000, '\n'); getline(cin, enter);
     }
     void returnBook(){
         if (borrowed.empty()){
-            displayMessage("Tidak ada buku yang bisa dikembalikan saat ini");
+            displayMessage("Tidak ada buku yang sedang dipinjam saat ini");
             return;
-        }
-        while(true){
-            
         }
         displayBorrowed();
         string title;
         cout << "Masukkan judul buku yang ingin dikembalikan: "; cin >> title;
         for(int i = 0; i < borrowed.size(); i++){
+            //cari buku yang ingin dikembalikan
             if(borrowed[i].title == title){
-//mau kembalikan satu satu atau sekaligus
-                borrowed[i].qty--;
+                //jika ada, tambahkan ke stock buku & hapus buku dari daftar buku yang dipinjam
                 for(int j = 0; j < books.size(); j++){
                     if(books[j].title == title){
-                        books[j].qty++; break;
+                        books[j].qty+= borrowed[i].qty; 
+                        borrowed.erase(remove(borrowed.begin(), borrowed.end(), borrowed[i]), borrowed.end());
+                        break;
                     }
                 }
                 return;
@@ -190,7 +196,7 @@ public:
     }
     void returnedHistory(){
         if(returned.empty()){
-            displayMessage("Tidak ada buku yang dapat dikembalikan");
+            displayMessage("Daftar pengembalian buku masih kosong");
             return;
         }
         stack<string> temp = returned;
