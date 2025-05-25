@@ -1,11 +1,12 @@
 #include <iostream>
 #include <string>
 #include <stdlib.h>
+#include <cmath>
 using namespace std;
 
 class BangunRuang{
 protected:
-    double volume;
+    double volume, luas_permukaan;
     string nama;
 public:
     BangunRuang(string nama){
@@ -15,11 +16,18 @@ public:
     double getVolume(){                 //enkapsulasi
         return volume;
     }
+    virtual void hitungLuasPermukaan() = 0;
+    double getLuasPermukaan(){          //enkapsulasi
+        return luas_permukaan;
+    }
     string getNama(){
         return nama;
     }
     void tampilVolume(){
         cout << "Bangun ruang " << getNama() << " memiliki volume: " << getVolume() << endl;
+    }
+    void tampilLuasPermukaan(){
+        cout << "Bangun ruang " << getNama() << " memiliki luas permukaan: " << getLuasPermukaan() << endl;
     }
     virtual ~BangunRuang(){};
 };
@@ -32,6 +40,9 @@ public:
     }
     void hitungVolume() override{       //abstraksi
         volume = sisi * sisi * sisi;
+    }
+    void hitungLuasPermukaan() override{       //abstraksi
+        luas_permukaan = 6*sisi * sisi;
     }
     ~Kubus(){}
 };
@@ -47,6 +58,9 @@ public:
     void hitungVolume() override{
         volume = panjang * lebar * tinggi;
     }
+    void hitungLuasPermukaan() override{
+        luas_permukaan = 2*(panjang * lebar + panjang * tinggi + lebar* tinggi);
+    }
     ~Balok(){}
 };
 class Tabung : public BangunRuang{
@@ -60,6 +74,9 @@ public:
     void hitungVolume() override{
         volume = 3.14 * jari_jari * jari_jari * tinggi;
     }
+    void hitungLuasPermukaan() override{
+        luas_permukaan = 2 * 3.14 * jari_jari * (jari_jari + tinggi);
+    }
     ~Tabung(){}
 };
 class Bola : public BangunRuang{
@@ -70,13 +87,16 @@ public:
         this->jari_jari = jari_jari;
     }
     void hitungVolume() override{
-        volume = 4/3 * 3.14 * jari_jari * jari_jari * jari_jari;
+        volume = (4.0/3.0) * 3.14 * jari_jari * jari_jari * jari_jari;
+    }
+    void hitungLuasPermukaan() override{
+        luas_permukaan = 4* 3.14* jari_jari*jari_jari;
     }
     ~Bola(){}
 };
 class PrismaSegitiga : public BangunRuang{
 private:
-    double panjang, lebar, tinggi;
+    double panjang, lebar, tinggi, luas_alas, sisi_miring, keliling_alas, luas_sisi;
 public:
     PrismaSegitiga(double panjang, double lebar, double tinggi) : BangunRuang("Prisma Segitiga"){
         this->panjang = panjang;    //tinggi prisma
@@ -86,27 +106,38 @@ public:
     void hitungVolume() override{
         volume = panjang * lebar * tinggi / 2;
     }
+    void hitungLuasPermukaan() override{
+        luas_alas = 0.5 * lebar * tinggi;  // luas segitiga
+        sisi_miring = sqrt(lebar * lebar + tinggi * tinggi);  // sisi miring segitiga (teorema pythagoras)
+        keliling_alas = lebar + tinggi + sisi_miring;  // keliling segitiga
+        luas_sisi = keliling_alas * panjang;  // luas sisi tegak
+        
+        luas_permukaan = 2 * luas_alas + luas_sisi;
+    }
     ~PrismaSegitiga(){}
 };
 
 int main(){
     string bangunRuang[] = {"Kubus", "Balok", "Tabung", "Bola", "Prisma Segitiga"};
+    string jenisHitung[] = {"Volume", "Luas Permukaan"};
     int n = sizeof(bangunRuang) / sizeof(bangunRuang[0]);   //hitung jumlah bangun ruang
-    int pilihan;    //input pilihan user
+    int jenis = sizeof(jenisHitung) / sizeof(jenisHitung[0]);  //hitung berapa jenis perhitungan
+    int pilihanBangun, pilihanJenis;    //input pilihan user
     string confirm; //input konfirmasi user
     BangunRuang *bangun;
     double sisi, panjang, lebar, tinggi, jari_jari;
     string enter;
     while(true){
-        // loop untuk meminta input pilihan user
+        // loop untuk meminta input pilihan jenis perhitungan
         while (true){
             system("cls");
-            //tampilkan pilihan bangun ruang yang tersedia
-            cout << "Menghitung volume bangun ruang" << endl;
-            for (int i = 0; i < n; i++){
-                cout << i + 1 << ". " << bangunRuang[i] << endl;
+            //tampilkan pilihan jenis perhitungan
+            cout << "=== KALKULATOR BANGUN RUANG ===" << endl;
+            cout << "Pilih jenis perhitungan:" << endl;
+            for (int i = 0; i < jenis; i++){
+                cout << i + 1 << ". " << jenisHitung[i] << endl;
             }
-            cout << "Pilihan: "; cin >> pilihan;
+            cout << "Pilihan: "; cin >> pilihanJenis;
             if(cin.fail()){
                 cin.clear();
                 cout << ">> Pilihan harus angka";
@@ -114,7 +145,32 @@ int main(){
                 getline(cin, enter);
                 continue;
             }
-            if(pilihan > 0 && pilihan <= n) break;
+            if(pilihanJenis > 0 && pilihanJenis <= jenis) break;
+            else {
+                cout << ">> Pilihan harus dari 1-"<< jenis <<endl;
+                cin.ignore(10000, '\n');
+                getline(cin, enter);
+            }
+        }
+
+        // loop untuk meminta input pilihan jenis bangun ruang
+        while (true){
+            system("cls");
+            //tampilkan pilihan bangun ruang yang tersedia
+            cout << "=== MENGHITUNG " << jenisHitung[pilihanJenis-1] << " BANGUN RUANG ===" << endl;
+            cout << "Pilih bangun ruang:" << endl;
+            for (int i = 0; i < n; i++){
+                cout << i + 1 << ". " << bangunRuang[i] << endl;
+            }
+            cout << "Pilihan: "; cin >> pilihanBangun;
+            if(cin.fail()){
+                cin.clear();
+                cout << ">> Pilihan harus angka";
+                cin.ignore(10000, '\n');    //clear buffer
+                getline(cin, enter);
+                continue;
+            }
+            if(pilihanBangun > 0 && pilihanBangun <= n) break;
             else {
                 cout << ">> Pilihan harus dari 1-"<< n <<endl;
                 cin.ignore(10000, '\n');
@@ -122,33 +178,25 @@ int main(){
             }
         }
 
-        switch(pilihan){
+        switch(pilihanBangun){
             case 1:
                 cout << "Masukkan sisi: "; cin >> sisi;
                 bangun = new Kubus(sisi);
-                bangun->hitungVolume();
-                bangun->tampilVolume();
                 break;
             case 2:
                 cout << "Masukkan panjang: "; cin >> panjang;
                 cout << "Masukkan lebar: "; cin >> lebar;
                 cout << "Masukkan tinggi: "; cin >> tinggi;
                 bangun = new Balok(panjang, lebar, tinggi);
-                bangun->hitungVolume();
-                bangun->tampilVolume();
                 break;
             case 3:
                 cout << "Masukkan jari-jari: "; cin >> jari_jari;
                 cout << "Masukkan tinggi: "; cin >> tinggi;
                 bangun = new Tabung(jari_jari, tinggi);
-                bangun->hitungVolume();
-                bangun->tampilVolume();
                 break;
             case 4:
                 cout << "Masukkan jari-jari: "; cin >> jari_jari;
                 bangun = new Bola(jari_jari);
-                bangun->hitungVolume();
-                bangun->tampilVolume();
                 break;
             case 5:
                 double panjang, lebar, tinggi;
@@ -156,12 +204,20 @@ int main(){
                 cout << "Masukkan tinggi segitiga: "; cin >> tinggi;
                 cout << "Masukkan tinggi prisma: "; cin >> panjang;
                 bangun = new PrismaSegitiga(panjang, lebar, tinggi);
-                bangun->hitungVolume();
-                bangun->tampilVolume();
                 break;
             default:
                 break;
         }
+
+        // Hitung dan tampilkan hasil berdasarkan pilihan jenis
+            if(pilihanJenis == 1){ // Volume
+                bangun->hitungVolume();
+                bangun->tampilVolume();
+            }
+            else{ // Luas Permukaan
+                bangun->hitungLuasPermukaan();
+                bangun->tampilLuasPermukaan();
+            }
 
         cout << "Apakah anda ingin menghitung luas bangun ruang lainnya? (y/n): "; cin >> confirm;
         if(confirm == "n" || confirm == "N") {
