@@ -118,7 +118,7 @@ public:
             cout << i+1 << ". Judul: " << books[i].title << ", Stock: "<< books[i].qty << endl;
         }
         string searchTitle;
-        cout << "Masukkan judul buku yang ingin dicari: "; cin >> searchTitle;
+        cout << "Masukkan judul buku yang ingin dicari: "; cin.ignore(10000, '\n'); getline(cin, searchTitle);
         if(books.empty()){
             displayMessage("Tidak ada buku yang tersedia saat ini");
             return;
@@ -127,7 +127,7 @@ public:
             if(books[i].title == searchTitle){
                 cout << "Judul: " << books[i].title << endl;
                 cout << "Stock: " << books[i].qty << endl;
-                cin.ignore(10000, '\n'); getline(cin, enter);
+                getline(cin, enter);
                 return;
             }
         }
@@ -142,9 +142,10 @@ public:
         sortByName();
         //tampilkan daftar buku yang tersedia berdasarkan nama
         for(int i = 0; i < books.size(); i++){
-            cout << i+1 << ". Judul: " << books[i].title << ", Stock: "<< books[i].qty << endl;
+            cout << i+1 << ". Judul: \"" << books[i].title << "\", Stock: "<< books[i].qty << endl;
         }
-        cout << "Masukkan judul buku yang ingin dipinjam: "; cin >> title;
+        cout << "Masukkan judul buku yang ingin dipinjam: "; cin.ignore(10000, '\n');
+        getline(cin, title);
         for(int i = 0; i < books.size(); i++){
             if(books[i].title == title){
                 // jika stock ada, buku dpinjam
@@ -152,7 +153,6 @@ public:
                 if(books[i].qty > 0){
                     displayMessage("Berhasil meminjam buku " + books[i].title);
                     books[i].qty--;
-
                     borrowed.push_back({books[i].title, 1});
                 } else {
                     displayMessage("Stock buku habis, silahkan pinjam buku lain");
@@ -172,6 +172,7 @@ public:
             if(borrowed[i].qty == 0) continue;
             cout << i+1 << ". " << borrowed[i].title << ", Jumlah: " << borrowed[i].qty << endl;
         }
+        cin.ignore(10000, '\n'); getline(cin, enter);
     }
     void returnBook(){
         if (borrowed.empty()){
@@ -180,7 +181,8 @@ public:
         }
         displayBorrowed();
         string title;
-        cout << "Masukkan judul buku yang ingin dikembalikan: "; cin >> title;
+        cout << "Masukkan judul buku yang ingin dikembalikan: ";
+        getline(cin, title);
         for(int i = 0; i < borrowed.size(); i++){
             //cari buku yang ingin dikembalikan
             if(borrowed[i].title == title){
@@ -191,12 +193,9 @@ public:
                         borrowed.erase(remove(borrowed.begin(), borrowed.end(), borrowed[i]), borrowed.end());
                         returned.push(title);        
                         displayMessage("Buku berhasil dikembalikan");
-                        break;
+                        return;
                     }
                 }
-                return;
-            } else {
-                displayMessage("Buku tidak ditemukan"); return;
             }
         }
         displayMessage("Buku tidak ditemukan");
@@ -254,7 +253,7 @@ int main(){
             }
         }
     }
-    cout << "Terima kasih telah menggunakan Virtual Library";
+    displayMessage("Terima kasih telah menggunakan Virtual Library");
 
     return 0;
 }
