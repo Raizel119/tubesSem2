@@ -195,7 +195,7 @@ public:
                 displayMessage("Buku tidak ditemukan"); return;
             }
         }
-        displayMessage("Buku digigit agnes"); //easter egg
+        displayMessage("Buku tidak ditemukan");
     }
     void returnedHistory(){
         if(returned.empty()){
