@@ -31,7 +31,8 @@ private:
 public:
     void addBook(){
         Book newBook;
-        cout << "Masukkan judul buku: "; cin >> newBook.title;
+        cout << "Masukkan judul buku: "; 
+        getline(cin, newBook.title);
         cout << "Masukkan stock buku: "; cin >> newBook.qty;
         if(newBook.qty < 1) {
             displayMessage("Stock buku yang mau ditambahkan tidak boleh kurang dari 1");
@@ -147,6 +148,7 @@ public:
                 if(books[i].qty > 0){
                     displayMessage("Berhasil meminjam buku " + books[i].title);
                     books[i].qty--;
+
                     borrowed.push_back({books[i].title, 1});
                 } else {
                     displayMessage("Stock buku habis, silahkan pinjam buku lain");
@@ -165,8 +167,7 @@ public:
         for (int i = 0; i < borrowed.size(); i++){
             if(borrowed[i].qty == 0) continue;
             cout << i+1 << ". " << borrowed[i].title << ", Jumlah: " << borrowed[i].qty << endl;
-        } 
-        cin.ignore(10000, '\n'); getline(cin, enter);
+        }
     }
     void returnBook(){
         if (borrowed.empty()){
@@ -184,6 +185,8 @@ public:
                     if(books[j].title == title){
                         books[j].qty+= borrowed[i].qty; 
                         borrowed.erase(remove(borrowed.begin(), borrowed.end(), borrowed[i]), borrowed.end());
+                        returned.push(title);        
+                        displayMessage("Buku berhasil dikembalikan");
                         break;
                     }
                 }
