@@ -31,8 +31,12 @@ private:
 public:
     void addBook(){
         Book newBook;
-        cout << "Masukkan judul buku: "; 
-        getline(cin, newBook.title);
+        cin.ignore(10000, '\n');
+        cout << "Masukkan judul buku: "; getline(cin, newBook.title);
+        if(newBook.title == "") {
+            displayMessage("Judul buku tidak boleh kosong");
+            return;
+        }
         cout << "Masukkan stock buku: "; cin >> newBook.qty;
         if(newBook.qty < 1) {
             displayMessage("Stock buku yang mau ditambahkan tidak boleh kurang dari 1");
@@ -104,7 +108,7 @@ public:
         }
         system("cls");
         for(int i = 0; i < books.size(); i++){
-            cout << i+1 << ". Judul: " << books[i].title << ", Stock: "<< books[i].qty << endl;
+            cout << i+1 << ". Judul: \"" << books[i].title << "\", Stock: "<< books[i].qty << endl;
         } cin.ignore(10000, '\n'); getline(cin, enter);
     }
     void searchBook(){
