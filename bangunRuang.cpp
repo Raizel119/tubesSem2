@@ -31,6 +31,7 @@ public:
     }
     virtual ~BangunRuang(){};
 };
+
 class Kubus : public BangunRuang{
 private:
     double sisi;
@@ -178,6 +179,7 @@ int main(){
             }
         }
 
+        // 
         switch(pilihanBangun){
             case 1:
                 cout << "Masukkan sisi: "; cin >> sisi;

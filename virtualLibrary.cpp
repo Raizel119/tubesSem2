@@ -5,6 +5,7 @@
 #include <queue>
 #include <string>
 #include <algorithm> //for erase
+#include <cctype>
 using namespace std;
 
 struct Book{
@@ -22,6 +23,12 @@ void displayMessage(string msg){
     cout << msg << endl;
     cin.ignore(10000, '\n'); getline(cin, enter);
 }
+string convert(string s){
+    for (int i = 0; i < s.length(); i++){
+        s[i] = toupper(s[i]);
+    }
+    return s;
+}
 
 class Library{
 private:
@@ -29,10 +36,12 @@ private:
     vector<Book> borrowed;     //buku yang sedang dipinjam
     stack<string> returned;     //riwayat pengembalian buku
 public:
+    //Bryan
     void addBook(){
         Book newBook;
         cin.ignore(10000, '\n');
         cout << "Masukkan judul buku: "; getline(cin, newBook.title);
+        newBook.title = convert(newBook.title);
         if(newBook.title == "") {
             displayMessage("Judul buku tidak boleh kosong");
             return;
@@ -58,6 +67,7 @@ public:
         }
         displayMessage("Buku berhasil ditambahkan");
     }
+
     void sortByName(){
         for(int i = 0; i < books.size(); i++){
             for(int j = i + 1; j < books.size(); j++){
@@ -80,6 +90,8 @@ public:
             }
         }
     }
+
+    //Agnes
     void displayBook(){
         if(books.empty()){
             displayMessage("Tidak ada buku yang tersedia saat ini");
@@ -119,6 +131,7 @@ public:
         }
         string searchTitle;
         cout << "Masukkan judul buku yang ingin dicari: "; cin.ignore(10000, '\n'); getline(cin, searchTitle);
+        searchTitle = convert(searchTitle);
         if(books.empty()){
             displayMessage("Tidak ada buku yang tersedia saat ini");
             return;
@@ -133,6 +146,8 @@ public:
         }
         displayMessage("Buku tidak ditemukan");
     }
+
+    //Rahma
     void borrowBook(){
         if(books.empty()){
             displayMessage("Tidak ada buku yang tersedia saat ini");
@@ -146,6 +161,7 @@ public:
         }
         cout << "Masukkan judul buku yang ingin dipinjam: "; cin.ignore(10000, '\n');
         getline(cin, title);
+        title = convert(title);
         for(int i = 0; i < books.size(); i++){
             if(books[i].title == title){
                 // jika stock ada, buku dpinjam
@@ -174,6 +190,8 @@ public:
         }
         cin.ignore(10000, '\n'); getline(cin, enter);
     }
+
+    //Arif
     void returnBook(){
         if (borrowed.empty()){
             displayMessage("Tidak ada buku yang sedang dipinjam saat ini");
@@ -183,6 +201,7 @@ public:
         string title;
         cout << "Masukkan judul buku yang ingin dikembalikan: ";
         getline(cin, title);
+        title = convert(title);
         for(int i = 0; i < borrowed.size(); i++){
             //cari buku yang ingin dikembalikan
             if(borrowed[i].title == title){
